@@ -54,7 +54,7 @@ with DAG(
 
     output_volume = V1Volume(
         name='output-volume',
-        host_path=V1HostPathVolumeSource(path='/home/user/tennis_output')
+        host_path=V1HostPathVolumeSource(path='/home/enekhai/workspace/projects/sai/tennis_court_detector')
     )
     output_volume_mount = V1VolumeMount(
         name='output-volume',
@@ -75,7 +75,7 @@ with DAG(
         arguments=[
             # If your container has an ENTRYPOINT, you might just pass these
             # as arguments. Or if you have to run the python script, adapt below.
-            'tennis-court-detector --input_path /data/image/0oEvj5HuYMp_frame_2.jpg'
+            'tennis-court-detector --input_path ./data/image/0oEvj5HuYMp_frame_2.jpg'
         ],
         volumes=[output_volume],
         volume_mounts=[output_volume_mount],
