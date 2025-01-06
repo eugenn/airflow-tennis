@@ -28,7 +28,7 @@ with DAG(
     # ----------------------------------------------------------------------------
     file_sensor = FileSensor(
         task_id='wait_for_image_file',
-        filepath='*.jpg',  # Adjust to your folder path
+        filepath='/opt/airflow/external_input/*.jpg',  # Adjust to your folder path
         fs_conn_id='fs_default',
         poke_interval=10,
         timeout=60 * 60 * 24,
