@@ -3,6 +3,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import Kubernete
 from airflow.sensors.filesystem import FileSensor
 from kubernetes.client import V1Volume, V1VolumeMount, V1HostPathVolumeSource
 from datetime import datetime
+
 # --------------------------------------------------------------------------------
 # Default args for the DAG
 # --------------------------------------------------------------------------------
@@ -33,6 +34,7 @@ with DAG(
         poke_interval=10,
         timeout=60 * 60 * 24,
         mode='poke',
+        do_xcom_push=True,  # Push the detected file path to XCom
     )
 
     # ----------------------------------------------------------------------------
@@ -41,23 +43,23 @@ with DAG(
     run_detector = KubernetesPodOperator(
         task_id='run_tennis_court_detector',
         name='tennis-court-detector-job',
-        namespace='default',
+        namespace='airflow',  # Ensure it matches your namespace
         image='tennis-court-detector:latest',
         cmds=['python3', 'scripts/main.py'],
         arguments=[
-            '--input_path', "{{ task_instance.xcom_pull(task_ids='wait_for_image_file') }}",
+            '--input_path', "{{ ti.xcom_pull(task_ids='wait_for_image_file') }}",
             '--output_path', '/output/court.png',
         ],
         volumes=[
             V1Volume(
-                name='output-volume',
-                host_path=V1HostPathVolumeSource(path='/home/enekhai/workspace/projects/sai/tennis_court_detector')
+                name='external-input-volume',
+                host_path=V1HostPathVolumeSource(path='/home/enekhai/workspace/projects/sai/airflow-k8s/input')
             )
         ],
         volume_mounts=[
             V1VolumeMount(
-                name='output-volume',
-                mount_path='/output',
+                name='external-input-volume',
+                mount_path='/opt/airflow/external_input',
                 read_only=False
             )
         ],
