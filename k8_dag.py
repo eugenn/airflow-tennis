@@ -5,7 +5,7 @@ from datetime import datetime
 # Default arguments for the DAG
 default_args = {
     'owner': 'airflow',
-    'start_date': datetime(2023, 9, 22),  # Set your start date
+    'start_date': datetime(2025, 1, 1),  # Set your start date
 }
 
 # Define the DAG
