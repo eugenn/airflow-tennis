@@ -51,17 +51,34 @@ with DAG(
             '--output_path', '/output/court.png',
         ],
         volumes=[
+            # 1) Input Volume
             V1Volume(
                 name='external-input-volume',
-                host_path=V1HostPathVolumeSource(path='/home/enekhai/workspace/projects/sai/airflow-k8s/input')
-            )
+                host_path=V1HostPathVolumeSource(
+                    path='/home/enekhai/workspace/projects/sai/airflow-k8s/input'
+                )
+            ),
+            # 2) Output Volume
+            V1Volume(
+                name='external-output-volume',
+                host_path=V1HostPathVolumeSource(
+                    path='/home/enekhai/workspace/projects/sai/airflow-k8s/output'
+                )
+            ),
         ],
         volume_mounts=[
+            # 1) Mount for Input
             V1VolumeMount(
                 name='external-input-volume',
                 mount_path='/opt/airflow/external_input',
                 read_only=False
-            )
+            ),
+            # 2) Mount for Output
+            V1VolumeMount(
+                name='external-output-volume',
+                mount_path='/output',  # This will match the --output_path argument
+                read_only=False
+            ),
         ],
         get_logs=True,
         is_delete_operator_pod=True,
