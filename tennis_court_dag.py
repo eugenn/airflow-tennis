@@ -1,8 +1,8 @@
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.sensors.filesystem import FileSensor
+from kubernetes.client import V1Volume, V1VolumeMount, V1HostPathVolumeSource
 from datetime import datetime
-
 # --------------------------------------------------------------------------------
 # Default args for the DAG
 # --------------------------------------------------------------------------------
