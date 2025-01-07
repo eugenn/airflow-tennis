@@ -26,15 +26,15 @@ with DAG(
     # ----------------------------------------------------------------------------
     # 1) Sensor Task: Detect if a new image file exists
     # ----------------------------------------------------------------------------
-    file_sensor = FileSensor(
-        task_id='wait_for_image_file',
-        filepath='/opt/airflow/external_input/*.jpg',  # Adjust to your folder path
-        fs_conn_id='fs_default',
-        poke_interval=10,
-        timeout=60 * 60 * 24,
-        mode='poke',
-        do_xcom_push=True,  # Push the detected file path to XCom
-    )
+    # file_sensor = FileSensor(
+    #     task_id='wait_for_image_file',
+    #     filepath='/opt/airflow/external_input/*.jpg',  # Adjust to your folder path
+    #     fs_conn_id='fs_default',
+    #     poke_interval=10,
+    #     timeout=60 * 60 * 24,
+    #     mode='poke',
+    #     do_xcom_push=True,  # Push the detected file path to XCom
+    # )
 
     # ----------------------------------------------------------------------------
     # 2) K8s Pod Operator: Run the container with the detected file
@@ -46,7 +46,7 @@ with DAG(
         image='tennis-court-detector:latest',
         cmds=['python3', 'scripts/main.py'],
         arguments=[
-            '--input_path', "{{ ti.xcom_pull(task_ids='wait_for_image_file') }}",
+            '--input_path', "./data/image/0iY7kaPVJph_frame_3.jpg",
             '--output_path', '/output/court.png',
         ],
         volumes=[
@@ -79,11 +79,11 @@ with DAG(
                 read_only=False
             ),
         ],
-        security_context={
-            'runAsUser': 50000,
-            'runAsGroup': 50000,
-            'fsGroup': 50000
-        },
+        # security_context={
+        #     'runAsUser': 50000,
+        #     'runAsGroup': 50000,
+        #     'fsGroup': 50000
+        # },
         get_logs=True,
         is_delete_operator_pod=True,
     )
@@ -91,4 +91,4 @@ with DAG(
     # ----------------------------------------------------------------------------
     # Task Dependencies
     # ----------------------------------------------------------------------------
-    file_sensor >> run_detector
+    run_detector
