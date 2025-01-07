@@ -55,36 +55,34 @@ with DAG(
             requests={'nvidia.com/gpu': '1'},  # or however many you need
             limits={'nvidia.com/gpu': '1'}
         ),
+        # Mount volumes
         volumes=[
-            # 1) Input Volume
             V1Volume(
-                name='external-input-volume',
+                name='my-image-dir',
                 host_path=V1HostPathVolumeSource(
-                    path='/home/enekhai/workspace/projects/sai/airflow-k8s/input'
+                    # The folder on your K8s worker node that contains the images
+                    path='/home/enekhai/workspace/projects/sai/data/image'
                 )
             ),
-            # 2) Output Volume
             V1Volume(
-                name='external-output-volume',
+                name='my-output-dir',
                 host_path=V1HostPathVolumeSource(
-                    path='/home/enekhai/workspace/projects/sai/airflow-k8s/output'
+                    path='/home/enekhai/workspace/projects/sai/tennis_court_detector'
                 )
             ),
         ],
         volume_mounts=[
-            # 1) Mount for Input
             V1VolumeMount(
-                name='external-input-volume',
-                mount_path='/opt/airflow/external_input',
-                read_only=False
+                name='my-image-dir',
+                # Mount it under /app/data/image if that’s the container’s expected location
+                mount_path='/app/data/image'
             ),
-            # 2) Mount for Output
             V1VolumeMount(
-                name='external-output-volume',
-                mount_path='/output',  # This will match the --output_path argument
-                read_only=False
+                name='my-output-dir',
+                mount_path='/output'
             ),
         ],
+
         # security_context={
         #     'runAsUser': 50000,
         #     'runAsGroup': 50000,
