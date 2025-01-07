@@ -49,6 +49,11 @@ with DAG(
             '--input_path', "./data/image/0iY7kaPVJph_frame_3.jpg",
             '--output_path', '/output/court.png',
         ],
+        resources={
+            'limits': {
+                'nvidia.com/gpu': 1  # or more, depending on your needs
+            }
+        },
         volumes=[
             # 1) Input Volume
             V1Volume(
