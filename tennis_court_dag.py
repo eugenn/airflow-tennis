@@ -91,7 +91,7 @@ with DAG(
         #     'fsGroup': 50000
         # },
         get_logs=True,
-        is_delete_operator_pod=True,
+        is_delete_operator_pod=False,
     )
 
     # ----------------------------------------------------------------------------
