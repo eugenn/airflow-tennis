@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.sensors.filesystem import FileSensor
 from kubernetes.client import V1Volume, V1VolumeMount, V1HostPathVolumeSource
+from kubernetes.client import V1ResourceRequirements
 from datetime import datetime
 
 # --------------------------------------------------------------------------------
@@ -49,11 +50,11 @@ with DAG(
             '--input_path', "./data/image/0iY7kaPVJph_frame_3.jpg",
             '--output_path', '/output/court.png',
         ],
-        resources={
-            'limits': {
-                'nvidia.com/gpu': 1  # or more, depending on your needs
-            }
-        },
+        # The correct way to specify container resource requests/limits:
+        container_resources=V1ResourceRequirements(
+            requests={'nvidia.com/gpu': '1'},  # or however many you need
+            limits={'nvidia.com/gpu': '1'}
+        ),
         volumes=[
             # 1) Input Volume
             V1Volume(
