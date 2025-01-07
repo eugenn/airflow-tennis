@@ -23,7 +23,6 @@ with DAG(
         schedule_interval=None,
         catchup=False,
 ) as dag:
-
     # ----------------------------------------------------------------------------
     # 1) Sensor Task: Detect if a new image file exists
     # ----------------------------------------------------------------------------
@@ -80,6 +79,11 @@ with DAG(
                 read_only=False
             ),
         ],
+        security_context={
+            'runAsUser': 0,  # Run as root user
+            'runAsGroup': 0,
+            'fsGroup': 0
+        },
         get_logs=True,
         is_delete_operator_pod=True,
     )
