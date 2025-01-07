@@ -80,9 +80,9 @@ with DAG(
             ),
         ],
         security_context={
-            'runAsUser': 0,  # Run as root user
-            'runAsGroup': 0,
-            'fsGroup': 0
+            'runAsUser': 50000,
+            'runAsGroup': 50000,
+            'fsGroup': 50000
         },
         get_logs=True,
         is_delete_operator_pod=True,
